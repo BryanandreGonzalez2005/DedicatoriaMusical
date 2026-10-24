@@ -935,4 +935,116 @@ body {
     padding: 8px 13px;
     font-size: .74rem;
   }
+  
+}
+/* BOTÓN PRESIÓNAME - pegar al final de public/css/cliente.css */
+
+.button-abreme {
+  position: relative;
+  text-align: center;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+  background-color: transparent;
+  filter: url(#handDrawnNoise);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-family: "Courier New", monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1em 1.4em;
+  border: 0;
+  border-radius: 2rem;
+  box-shadow: #33333366 4px 4px 0 1px;
+  animation: idleAbreme 1s infinite ease-in-out;
+  overflow: visible;
+}
+
+.button-abreme .highlight {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: rgba(255, 225, 0, 0.5);
+  stroke-width: 10;
+  stroke-linecap: round;
+  pointer-events: none;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 0.5s ease-in-out;
+}
+
+.button-abreme .button-cosm {
+  width: 64px;
+  height: 64px;
+  fill: #33333366;
+  transition: 0.3s ease-out;
+  position: absolute;
+  left: -42px;
+  bottom: -16px;
+}
+
+.button-abreme:hover {
+  rotate: -2.5deg;
+  animation: hoverAbreme 2.5s infinite ease-in-out;
+}
+
+.button-abreme:hover .highlight {
+  stroke-dashoffset: 0;
+}
+
+.button-abreme:hover .button-cosm {
+  rotate: -15deg;
+  transform: translate(2px, 5px);
+}
+
+.button-abreme:active {
+  box-shadow: inset #333333f1 4px 4px 0 1px;
+  rotate: -2.5deg;
+}
+
+.button-abreme:active .highlight {
+  stroke-dashoffset: 1000;
+  stroke: #1c98eb66;
+}
+
+.button-abreme:active .button-cosm {
+  fill: #333333f1;
+  rotate: -135deg;
+  transform: translate(30px, 5px);
+}
+
+@keyframes idleAbreme {
+  0%, 100% {
+    filter: url(#handDrawnNoise);
+  }
+  50% {
+    rotate: 2.5deg;
+    filter: url(#handDrawnNoise2);
+  }
+}
+
+@keyframes hoverAbreme {
+  0%, 100% {
+    rotate: 0deg;
+    translate: 0 0;
+    filter: url(#handDrawnNoise);
+  }
+  25% {
+    rotate: -1deg;
+    translate: 0 -2px;
+    filter: url(#handDrawnNoise2);
+  }
+  50% {
+    rotate: 0deg;
+    translate: 0 2px;
+    filter: url(#handDrawnNoise);
+  }
+  75% {
+    rotate: -1deg;
+    translate: 0 -2px;
+    filter: url(#handDrawnNoise2);
+  }
 }

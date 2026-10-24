@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title><%= titulo %></title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/css/admin.css?v=5"
+  >
+</head>
+
+
+<body>
+
+<main class="admin-dashboard">
+
+  <div class="admin-shell">
+
+
+    <!-- ===================================== -->
+    <!-- BARRA SUPERIOR -->
+    <!-- ===================================== -->
+
+    <div class="admin-topbar">
+
+      <a
+        href="/admin"
+        class="brand"
+      >
+
+        <span class="brand-mark">
+          DM
+        </span>
+
+        <span class="brand-copy">
+
+          <strong>
+            Dedicatoria Musical
+          </strong>
+
+          <span>
+            Panel de administración
+          </span>
+
+        </span>
+
+      </a>
+
+
+      <a
+        href="/admin/notas"
+        class="btn-cancelar"
+      >
+        Volver
+      </a>
+
+    </div>
+
+
+    <div class="admin-layout">
+
+
+      <!-- ===================================== -->
+      <!-- MENÚ -->
+      <!-- ===================================== -->
+
+      <aside class="admin-sidebar">
+
+        <p class="sidebar-label">
+          Navegación
+        </p>
+
+        <nav class="sidebar-nav">
+
+
+          <!-- INICIO -->
+
+          <a
+            href="/admin"
+            class="sidebar-link"
+          >
+
+            <svg viewBox="0 0 24 24">
+
+              <path
+                d="M3 11.5 12 4l9 7.5"
+              />
+
+              <path
+                d="M5 10.5V20h14v-9.5"
+              />
+
+              <path
+                d="M9 20v-6h6v6"
+              />
+
+            </svg>
+
+            <span>
+              Inicio
+            </span>
+
+          </a>
+
+
+          <!-- CANCIONES -->
+
+          <a
+            href="/admin/canciones"
+            class="sidebar-link"
+          >
+
+            <svg viewBox="0 0 24 24">
+
+              <path
+                d="M9 18V5l10-2v13"
+              />
+
+              <circle
+                cx="6"
+                cy="18"
+                r="3"
+              />
+
+              <circle
+                cx="16"
+                cy="16"
+                r="3"
+              />
+
+            </svg>
+
+            <span>
+              Canciones
+            </span>
+
+          </a>
+
+
+          <!-- NOTAS -->
+
+          <a
+            href="/admin/notas"
+            class="sidebar-link active"
+          >
+
+            <svg viewBox="0 0 24 24">
+
+              <path
+                d="M4 4h16v16H4z"
+              />
+
+              <path
+                d="M7 8h10"
+              />
+
+              <path
+                d="M7 12h10"
+              />
+
+              <path
+                d="M7 16h6"
+              />
+
+            </svg>
+
+            <span>
+              Notas
+            </span>
+
+          </a>
+
+
+          <!-- VER PÁGINA -->
+
+          <a
+            href="/"
+            target="_blank"
+            class="sidebar-link"
+          >
+
+            <svg viewBox="0 0 24 24">
+
+              <path
+                d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"
+              />
+
+              <circle
+                cx="12"
+                cy="12"
+                r="2.5"
+              />
+
+            </svg>
+
+            <span>
+              Ver página
+            </span>
+
+          </a>
+
+        </nav>
+
+      </aside>
+
+
+      <!-- ===================================== -->
+      <!-- CONTENIDO -->
+      <!-- ===================================== -->
+
+      <section class="admin-content">
+
+
+        <!-- ENCABEZADO -->
+
+        <header class="dashboard-header">
+
+          <div>
+
+            <a
+              href="/admin/notas"
+              class="volver"
+            >
+              ← Volver a notas
+            </a>
+
+
+            <p class="dashboard-label">
+              Nuevo mensaje
+            </p>
+
+
+            <h1>
+              Nueva nota
+            </h1>
+
+
+            <p class="dashboard-bienvenida">
+              Escribe un nuevo mensaje para
+              la sección "Ábreme".
+            </p>
+
+          </div>
+
+        </header>
+
+
+        <!-- ===================================== -->
+        <!-- FORMULARIO -->
+        <!-- ===================================== -->
+
+        <section class="form-cancion-card">
+
+
+          <!-- ERROR -->
+
+          <% if (error) { %>
+
+            <div
+              class="alert alert-danger"
+              role="alert"
+            >
+              <%= error %>
+            </div>
+
+          <% } %>
+
+
+          <form
+            action="/admin/notas/nueva"
+            method="POST"
+          >
+
+
+            <h2 class="form-section-title">
+              Información de la nota
+            </h2>
+
+
+            <!-- TÍTULO -->
+
+            <div class="mb-4">
+
+              <label
+                for="titulo"
+                class="form-label"
+              >
+                Título *
+              </label>
+
+
+              <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                class="form-control"
+                placeholder="Ej: Para ti"
+                required
+              >
+
+            </div>
+
+
+            <!-- FECHA -->
+
+            <div class="mb-4">
+
+              <label
+                for="fecha"
+                class="form-label"
+              >
+                Fecha
+              </label>
+
+
+              <input
+                type="date"
+                id="fecha"
+                name="fecha"
+                class="form-control"
+              >
+
+
+              <small class="ayuda-formulario">
+                Es opcional. Puedes usarla para
+                identificar o navegar entre tus notas.
+              </small>
+
+            </div>
+
+
+            <!-- CONTENIDO -->
+
+            <div class="mb-4">
+
+              <label
+                for="contenido"
+                class="form-label"
+              >
+                Mensaje *
+              </label>
+
+
+              <textarea
+                id="contenido"
+                name="contenido"
+                class="form-control"
+                rows="10"
+                placeholder="Escribe aquí lo que quieres decir..."
+                required
+              ></textarea>
+
+
+              <small class="ayuda-formulario">
+                Puedes separar el mensaje en párrafos.
+                Los saltos de línea se conservarán.
+              </small>
+
+            </div>
+
+
+            <!-- ORDEN -->
+
+            <div class="mb-4">
+
+              <label
+                for="orden"
+                class="form-label"
+              >
+                Orden
+              </label>
+
+
+              <input
+                type="number"
+                id="orden"
+                name="orden"
+                class="form-control"
+                value="0"
+                min="0"
+              >
+
+
+              <small class="ayuda-formulario">
+                Las notas con números menores
+                aparecerán primero.
+              </small>
+
+            </div>
+
+
+            <!-- VISIBLE -->
+
+            <div class="form-check mb-4">
+
+              <input
+                type="checkbox"
+                id="visible"
+                name="visible"
+                class="form-check-input"
+                checked
+              >
+
+
+              <label
+                for="visible"
+                class="form-check-label"
+              >
+                Mostrar esta nota en "Ábreme"
+              </label>
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <div class="form-acciones">
+
+              <button
+                type="submit"
+                class="btn-admin-option"
+              >
+                Guardar nota
+              </button>
+
+
+              <a
+                href="/admin/notas"
+                class="btn-cancelar"
+              >
+                Cancelar
+              </a>
+
+            </div>
+
+          </form>
+
+        </section>
+
+      </section>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+</html>

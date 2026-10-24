@@ -1,4 +1,5 @@
 const Cancion = require("../models/cancion.model");
+const Nota = require("../models/nota.model");
 
 
 // =============================================
@@ -15,12 +16,6 @@ const convertirYoutubeEmbed = (url) => {
 
     const parsedUrl = new URL(url);
 
-
-    // -----------------------------------------
-    // FORMATO:
-    // https://www.youtube.com/watch?v=VIDEO_ID
-    // -----------------------------------------
-
     if (
       parsedUrl.hostname.includes("youtube.com")
     ) {
@@ -36,12 +31,6 @@ const convertirYoutubeEmbed = (url) => {
 
     }
 
-
-    // -----------------------------------------
-    // FORMATO:
-    // https://youtu.be/VIDEO_ID
-    // -----------------------------------------
-
     if (
       parsedUrl.hostname === "youtu.be"
     ) {
@@ -56,7 +45,6 @@ const convertirYoutubeEmbed = (url) => {
       }
 
     }
-
 
     return null;
 
@@ -82,9 +70,12 @@ const mostrarInicio = async (req, res) => {
 
   try {
 
-    // Obtener canciones desde Supabase
-    const canciones =
-      await Cancion.obtenerCanciones();
+    // Obtener canciones y notas desde Supabase
+    const [canciones, notas] =
+      await Promise.all([
+        Cancion.obtenerCanciones(),
+        Nota.obtenerNotas()
+      ]);
 
 
     // Preparar canciones para la vista
@@ -118,6 +109,8 @@ const mostrarInicio = async (req, res) => {
         canciones:
           cancionesPreparadas,
 
+        notas: notas,
+
       }
     );
 
@@ -125,14 +118,14 @@ const mostrarInicio = async (req, res) => {
   } catch (error) {
 
     console.error(
-      "Error obteniendo canciones:",
+      "Error cargando la página:",
       error
     );
 
     res
       .status(500)
       .send(
-        "Error al cargar las canciones."
+        "Error al cargar la página."
       );
 
   }

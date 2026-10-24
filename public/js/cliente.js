@@ -251,6 +251,8 @@ function manejarEstadoYouTube(
     return;
   }
 
+  /* REPRODUCIENDO */
+
   if (
     event.data ===
     YT.PlayerState.PLAYING
@@ -263,11 +265,9 @@ function manejarEstadoYouTube(
       .forEach((otro) => {
 
         if (otro !== componente) {
-
           otro.classList.remove(
             "is-playing"
           );
-
         }
 
       });
@@ -280,33 +280,44 @@ function manejarEstadoYouTube(
       indice,
       event.target
     );
-
   }
+
+
+  /* PAUSADA */
 
   if (
     event.data ===
-      YT.PlayerState.PAUSED ||
+    YT.PlayerState.PAUSED
+  ) {
+
+    componente.classList.remove(
+      "is-playing"
+    );
+  }
+
+
+  /* CANCIÓN TERMINADA */
+
+  if (
     event.data ===
-      YT.PlayerState.ENDED
+    YT.PlayerState.ENDED
   ) {
 
     componente.classList.remove(
       "is-playing"
     );
 
-    if (
-      event.data ===
-      YT.PlayerState.ENDED
-    ) {
+    actualizarBarra(
+      componente,
+      0,
+      0
+    );
 
-      actualizarBarra(
-        componente,
-        0,
-        0
-      );
-
-    }
-
+    /* Reproducir automáticamente la siguiente */
+    reproducirVecino(
+      indice,
+      1
+    );
   }
 
 }
@@ -777,7 +788,29 @@ async function reproducirVecino(
       block: "center"
     });
 }
+function formatearFechaNota(fecha) {
 
+  if (!fecha) {
+    return "";
+  }
+
+  const partes = fecha.split("-");
+
+  const fechaLocal = new Date(
+    Number(partes[0]),
+    Number(partes[1]) - 1,
+    Number(partes[2])
+  );
+
+  return fechaLocal.toLocaleDateString(
+    "es-EC",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+}
 /* =========================================================
    INTERFAZ
 ========================================================= */
@@ -785,7 +818,39 @@ async function reproducirVecino(
 document.addEventListener(
   "DOMContentLoaded",
   function () {
+
     configurarReproductores();
+
+    /* ACCESO OCULTO AL ADMIN: ALT + H */
+    document.addEventListener(
+      "keydown",
+      function (event) {
+
+        if (
+          event.altKey &&
+          event.key.toLowerCase() === "h"
+        ) {
+          event.preventDefault();
+
+          window.location.href =
+            "/admin/login";
+        }
+
+      }
+    );
+
+
+    const elementoNotas =
+      document.getElementById("datosNotas");
+
+    const notas = elementoNotas
+      ? JSON.parse(
+          decodeURIComponent(
+            elementoNotas.dataset.notas
+          )
+        )
+      : [];
+
 
     const botonAbrirCarta =
       document.getElementById(
@@ -797,63 +862,144 @@ document.addEventListener(
         "btnVolverArriba"
       );
 
+   if (botonAbrirCarta) {
+  botonAbrirCarta.addEventListener(
+    "click",
+    function () {
 
-    if (botonAbrirCarta) {
-      botonAbrirCarta.addEventListener(
-        "click",
-        function () {
-          if (
-            typeof Swal === "undefined"
-          ) {
-            console.error(
-              "SweetAlert2 no está cargado."
-            );
-            return;
-          }
+      if (typeof Swal === "undefined") {
+        console.error(
+          "SweetAlert2 no está cargado."
+        );
+        return;
+      }
 
-          Swal.fire({
-            title: "Para ti",
+      if (!notas || notas.length === 0) {
+        Swal.fire({
+          title: "Para ti",
+          text: "Todavía no hay notas disponibles.",
+          confirmButtonText: "Cerrar"
+        });
+        return;
+      }
 
-            html: `
-              <div class="carta-contenido">
-                <div class="carta-linea"></div>
+      let indiceNota = 0;
 
-                <p class="carta-texto">
-                  Hay personas que llegan a nuestra vida
-                  y, sin hacer demasiado ruido,
-                  terminan convirtiéndose en una parte
-                  muy bonita de ella.
-                  <br><br>
+      const mostrarNota = () => {
 
-                  Quise hacer este pequeño espacio
-                  para guardar canciones que dicen
-                  algunas de esas cosas que a veces
-                  no sé cómo explicar con palabras.
-                  <br><br>
+        const nota = notas[indiceNota];
 
-                  Cada canción de aquí tiene
-                  un pedacito de lo que quiero decirte.
-                </p>
-              </div>
-            `,
+        Swal.fire({
+          title: nota.titulo,
 
-            showCloseButton: true,
-            showConfirmButton: true,
-            confirmButtonText: "Cerrar",
-            buttonsStyling: false,
+          html: `
+            <div class="carta-contenido">
+              <div class="carta-linea"></div>
 
-            customClass: {
-              popup: "swal-carta",
-              title: "swal-titulo-carta",
-              htmlContainer:
-                "swal-contenido-carta",
-              confirmButton:
-                "swal-boton-cerrar"
+              ${
+                nota.fecha
+                  ? `<p class="carta-fecha">
+                      ${formatearFechaNota(nota.fecha)}
+                    </p>`
+                  : ""
+              }
+
+              <p class="carta-texto"></p>
+
+              ${
+                notas.length > 1
+                  ? `
+                    <div class="carta-navegacion">
+                      <button
+                        type="button"
+                        id="notaAnterior"
+                        class="carta-flecha"
+                      >
+                        ←
+                      </button>
+
+                      <span>
+                        ${indiceNota + 1} / ${notas.length}
+                      </span>
+
+                      <button
+                        type="button"
+                        id="notaSiguiente"
+                        class="carta-flecha"
+                      >
+                        →
+                      </button>
+                    </div>
+                  `
+                  : ""
+              }
+            </div>
+          `,
+
+          showCloseButton: true,
+          showConfirmButton: true,
+          confirmButtonText: "Cerrar",
+          buttonsStyling: false,
+
+          customClass: {
+            popup: "swal-carta",
+            title: "swal-titulo-carta",
+            htmlContainer:
+              "swal-contenido-carta",
+            confirmButton:
+              "swal-boton-cerrar"
+          },
+
+          didOpen: () => {
+
+            const texto =
+              Swal.getHtmlContainer()
+                ?.querySelector(".carta-texto");
+
+            if (texto) {
+              texto.textContent =
+                nota.contenido;
             }
-          });
-        }
-      );
+
+            document
+              .getElementById("notaAnterior")
+              ?.addEventListener(
+                "click",
+                () => {
+                  indiceNota =
+                    (
+                      indiceNota -
+                      1 +
+                      notas.length
+                    ) %
+                    notas.length;
+
+                  mostrarNota();
+                }
+              );
+
+            document
+              .getElementById("notaSiguiente")
+              ?.addEventListener(
+                "click",
+                () => {
+                  indiceNota =
+                    (
+                      indiceNota + 1
+                    ) %
+                    notas.length;
+
+                  mostrarNota();
+                }
+              );
+          }
+        });
+      };
+
+      mostrarNota();
     }
+  );
+}
 
 
     if (botonVolverArriba) {
@@ -983,3 +1129,4 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+

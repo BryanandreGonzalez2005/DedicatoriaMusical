@@ -10,6 +10,8 @@ const clienteRoutes =
 const adminRoutes =
   require("./src/routes/admin.routes");
 
+  const notaRoutes =
+  require("./src/routes/nota.routes");
 
 const app = express();
 
@@ -85,18 +87,9 @@ app.use(
 // RUTAS
 // =============================================
 
-// Página pública
-app.use(
-  "/",
-  clienteRoutes
-);
-
-
-// Administración
-app.use(
-  "/admin",
-  adminRoutes
-);
+app.use("/", clienteRoutes);
+app.use("/admin", adminRoutes);
+app.use("/admin/notas", notaRoutes);
 
 
 // =============================================
