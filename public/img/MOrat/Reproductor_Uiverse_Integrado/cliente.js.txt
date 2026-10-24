@@ -1,0 +1,634 @@
+let reproductores = [];
+let reproductoresPorIndice = new Map();
+let intervaloProgreso = null;
+
+
+/* =========================================================
+   YOUTUBE
+========================================================= */
+
+function onYouTubeIframeAPIReady() {
+  const elementos =
+    document.querySelectorAll(".youtube-player");
+
+  elementos.forEach((elemento) => {
+    const url = elemento.dataset.videoUrl;
+    const videoId = obtenerVideoId(url);
+
+    if (!videoId) {
+      return;
+    }
+
+    const indice =
+      Number(
+        elemento.closest(".music-player")
+          ?.dataset.playerIndex
+      );
+
+    const player =
+      new YT.Player(
+        elemento.id,
+        {
+          videoId: videoId,
+
+          playerVars: {
+            rel: 0,
+            playsinline: 1,
+            controls: 0,
+            modestbranding: 1
+          },
+
+          events: {
+            onReady: function (event) {
+              if (!Number.isNaN(indice)) {
+                reproductoresPorIndice.set(
+                  indice,
+                  event.target
+                );
+              }
+
+              actualizarDuracion(
+                indice,
+                event.target
+              );
+            },
+
+            onStateChange: function (event) {
+              manejarEstadoYouTube(
+                indice,
+                event
+              );
+            }
+          }
+        }
+      );
+
+    reproductores.push(player);
+  });
+}
+
+
+function obtenerVideoId(url) {
+  if (!url) {
+    return null;
+  }
+
+  if (url.includes("/embed/")) {
+    return url
+      .split("/embed/")[1]
+      .split("?")[0];
+  }
+
+  try {
+    const parsed = new URL(url);
+
+    if (
+      parsed.hostname.includes("youtu.be")
+    ) {
+      return parsed.pathname
+        .replace("/", "")
+        .split("?")[0];
+    }
+
+    return parsed.searchParams.get("v");
+  } catch {
+    return null;
+  }
+}
+
+
+function pausarLosDemas(
+  reproductorActual
+) {
+  reproductores.forEach(
+    (reproductor) => {
+      if (
+        reproductor !== reproductorActual &&
+        typeof reproductor.pauseVideo ===
+          "function"
+      ) {
+        reproductor.pauseVideo();
+      }
+    }
+  );
+}
+
+
+function manejarEstadoYouTube(
+  indice,
+  event
+) {
+  const componente =
+    obtenerComponente(indice);
+
+  if (!componente) {
+    return;
+  }
+
+  if (
+    event.data ===
+    YT.PlayerState.PLAYING
+  ) {
+    pausarLosDemas(event.target);
+
+    document
+      .querySelectorAll(".music-player")
+      .forEach((otro) => {
+        if (otro !== componente) {
+          otro.classList.remove(
+            "is-playing"
+          );
+        }
+      });
+
+    componente.classList.add(
+      "is-playing"
+    );
+
+    iniciarActualizacionProgreso(
+      indice,
+      event.target
+    );
+  }
+
+  if (
+    event.data ===
+      YT.PlayerState.PAUSED ||
+    event.data ===
+      YT.PlayerState.ENDED
+  ) {
+    componente.classList.remove(
+      "is-playing"
+    );
+
+    if (
+      event.data ===
+      YT.PlayerState.ENDED
+    ) {
+      actualizarBarra(
+        componente,
+        0,
+        0
+      );
+    }
+  }
+}
+
+
+function obtenerComponente(indice) {
+  return document.querySelector(
+    `.music-player[data-player-index="${indice}"]`
+  );
+}
+
+
+function actualizarDuracion(
+  indice,
+  player
+) {
+  const componente =
+    obtenerComponente(indice);
+
+  if (!componente) {
+    return;
+  }
+
+  const intentar = () => {
+    const duracion =
+      Number(player.getDuration?.() || 0);
+
+    if (duracion > 0) {
+      const durationLabel =
+        componente.querySelector(
+          ".duration-time"
+        );
+
+      if (durationLabel) {
+        durationLabel.textContent =
+          formatearTiempo(duracion);
+      }
+    } else {
+      setTimeout(intentar, 500);
+    }
+  };
+
+  intentar();
+}
+
+
+function iniciarActualizacionProgreso(
+  indice,
+  player
+) {
+  if (intervaloProgreso) {
+    clearInterval(intervaloProgreso);
+  }
+
+  intervaloProgreso =
+    setInterval(() => {
+      const componente =
+        obtenerComponente(indice);
+
+      if (!componente) {
+        return;
+      }
+
+      const actual =
+        Number(
+          player.getCurrentTime?.() || 0
+        );
+
+      const duracion =
+        Number(
+          player.getDuration?.() || 0
+        );
+
+      actualizarBarra(
+        componente,
+        actual,
+        duracion
+      );
+    }, 500);
+}
+
+
+function actualizarBarra(
+  componente,
+  actual,
+  duracion
+) {
+  const barra =
+    componente.querySelector(
+      ".music-progress"
+    );
+
+  const actualLabel =
+    componente.querySelector(
+      ".current-time"
+    );
+
+  const durationLabel =
+    componente.querySelector(
+      ".duration-time"
+    );
+
+  const porcentaje =
+    duracion > 0
+      ? (actual / duracion) * 100
+      : 0;
+
+  if (barra) {
+    barra.value =
+      Math.min(
+        100,
+        Math.max(0, porcentaje)
+      );
+
+    barra.style.setProperty(
+      "--progress",
+      `${barra.value}%`
+    );
+  }
+
+  if (actualLabel) {
+    actualLabel.textContent =
+      formatearTiempo(actual);
+  }
+
+  if (
+    durationLabel &&
+    duracion > 0
+  ) {
+    durationLabel.textContent =
+      formatearTiempo(duracion);
+  }
+}
+
+
+function formatearTiempo(segundos) {
+  if (
+    !Number.isFinite(segundos) ||
+    segundos < 0
+  ) {
+    return "0:00";
+  }
+
+  const minutos =
+    Math.floor(segundos / 60);
+
+  const resto =
+    Math.floor(segundos % 60);
+
+  return (
+    minutos +
+    ":" +
+    String(resto).padStart(2, "0")
+  );
+}
+
+
+/* =========================================================
+   CONTROLES DEL REPRODUCTOR
+========================================================= */
+
+function configurarReproductores() {
+  document
+    .querySelectorAll(".music-player")
+    .forEach((componente) => {
+      const indice =
+        Number(
+          componente.dataset.playerIndex
+        );
+
+      const botonPlay =
+        componente.querySelector(
+          ".music-play"
+        );
+
+      const botonAnterior =
+        componente.querySelector(
+          ".music-prev"
+        );
+
+      const botonSiguiente =
+        componente.querySelector(
+          ".music-next"
+        );
+
+      const barra =
+        componente.querySelector(
+          ".music-progress"
+        );
+
+
+      botonPlay?.addEventListener(
+        "click",
+        () => {
+          const player =
+            reproductoresPorIndice.get(
+              indice
+            );
+
+          if (!player) {
+            return;
+          }
+
+          const estado =
+            player.getPlayerState?.();
+
+          if (
+            estado ===
+            YT.PlayerState.PLAYING
+          ) {
+            player.pauseVideo();
+          } else {
+            player.playVideo();
+          }
+        }
+      );
+
+
+      barra?.addEventListener(
+        "input",
+        () => {
+          barra.style.setProperty(
+            "--progress",
+            `${barra.value}%`
+          );
+        }
+      );
+
+
+      barra?.addEventListener(
+        "change",
+        () => {
+          const player =
+            reproductoresPorIndice.get(
+              indice
+            );
+
+          if (!player) {
+            return;
+          }
+
+          const duracion =
+            Number(
+              player.getDuration?.() || 0
+            );
+
+          if (duracion <= 0) {
+            return;
+          }
+
+          const destino =
+            duracion *
+            (Number(barra.value) / 100);
+
+          player.seekTo(
+            destino,
+            true
+          );
+        }
+      );
+
+
+      botonAnterior?.addEventListener(
+        "click",
+        () => {
+          reproducirVecino(
+            indice,
+            -1
+          );
+        }
+      );
+
+
+      botonSiguiente?.addEventListener(
+        "click",
+        () => {
+          reproducirVecino(
+            indice,
+            1
+          );
+        }
+      );
+    });
+}
+
+
+function reproducirVecino(
+  indiceActual,
+  direccion
+) {
+  const indices =
+    Array.from(
+      document.querySelectorAll(
+        ".music-player"
+      )
+    )
+      .map(
+        (elemento) =>
+          Number(
+            elemento.dataset.playerIndex
+          )
+      )
+      .filter(
+        (indice) =>
+          reproductoresPorIndice.has(
+            indice
+          )
+      )
+      .sort(
+        (a, b) => a - b
+      );
+
+  if (indices.length === 0) {
+    return;
+  }
+
+  const posicion =
+    indices.indexOf(indiceActual);
+
+  if (posicion === -1) {
+    return;
+  }
+
+  const nuevaPosicion =
+    (
+      posicion +
+      direccion +
+      indices.length
+    ) %
+    indices.length;
+
+  const nuevoIndice =
+    indices[nuevaPosicion];
+
+  const player =
+    reproductoresPorIndice.get(
+      nuevoIndice
+    );
+
+  const componente =
+    obtenerComponente(
+      nuevoIndice
+    );
+
+  player?.playVideo();
+
+  componente?.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+
+/* =========================================================
+   INTERFAZ
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+    configurarReproductores();
+
+    const botonAbrirCarta =
+      document.getElementById(
+        "btnAbrirCarta"
+      );
+
+    const botonVolverArriba =
+      document.getElementById(
+        "btnVolverArriba"
+      );
+
+
+    if (botonAbrirCarta) {
+      botonAbrirCarta.addEventListener(
+        "click",
+        function () {
+          if (
+            typeof Swal === "undefined"
+          ) {
+            console.error(
+              "SweetAlert2 no está cargado."
+            );
+            return;
+          }
+
+          Swal.fire({
+            title: "Para ti",
+
+            html: `
+              <div class="carta-contenido">
+                <div class="carta-linea"></div>
+
+                <p class="carta-texto">
+                  Hay personas que llegan a nuestra vida
+                  y, sin hacer demasiado ruido,
+                  terminan convirtiéndose en una parte
+                  muy bonita de ella.
+                  <br><br>
+
+                  Quise hacer este pequeño espacio
+                  para guardar canciones que dicen
+                  algunas de esas cosas que a veces
+                  no sé cómo explicar con palabras.
+                  <br><br>
+
+                  Cada canción de aquí tiene
+                  un pedacito de lo que quiero decirte.
+                </p>
+              </div>
+            `,
+
+            showCloseButton: true,
+            showConfirmButton: true,
+            confirmButtonText: "Cerrar",
+            buttonsStyling: false,
+
+            customClass: {
+              popup: "swal-carta",
+              title: "swal-titulo-carta",
+              htmlContainer:
+                "swal-contenido-carta",
+              confirmButton:
+                "swal-boton-cerrar"
+            }
+          });
+        }
+      );
+    }
+
+
+    if (botonVolverArriba) {
+      const controlarBotonVolver =
+        () => {
+          botonVolverArriba
+            .classList.toggle(
+              "visible",
+              window.scrollY > 450
+            );
+        };
+
+      window.addEventListener(
+        "scroll",
+        controlarBotonVolver,
+        { passive: true }
+      );
+
+      controlarBotonVolver();
+
+      botonVolverArriba
+        .addEventListener(
+          "click",
+          () => {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+        );
+    }
+  }
+);

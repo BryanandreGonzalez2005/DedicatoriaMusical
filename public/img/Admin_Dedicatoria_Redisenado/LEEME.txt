@@ -1,0 +1,20 @@
+ADMIN REDISEÑADO - DEDICATORIA MUSICAL
+
+Reemplaza:
+dashboard.ejs        -> src/views/admin/dashboard.ejs
+canciones.ejs        -> src/views/admin/canciones.ejs
+nueva-cancion.ejs    -> src/views/admin/nueva-cancion.ejs
+editar-cancion.ejs   -> src/views/admin/editar-cancion.ejs
+admin.css             -> public/css/admin.css
+
+Luego guarda/reinicia el servidor si hace falta y usa Ctrl + F5.
+
+Se conservaron:
+- rutas POST/GET existentes
+- nombres de campos del formulario
+- variables EJS
+- multipart/form-data
+- carga de portadas
+- estados visible/destacada
+
+Se agregó SweetAlert2 al eliminar canciones.

@@ -1,0 +1,17 @@
+ARCHIVOS PARA REEMPLAZAR
+
+1) inicio.ejs.txt
+   -> src/views/cliente/inicio.ejs
+
+2) cliente.css.txt
+   -> public/css/cliente.css
+
+3) cliente.js.txt
+   -> public/js/cliente.js
+
+Después:
+- Guardar los 3 archivos.
+- Reiniciar npm/node si el servidor no recarga EJS.
+- Abrir localhost:3000 y usar Ctrl + F5.
+
+El reproductor usa la API real de YouTube.

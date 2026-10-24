@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title><%= titulo %></title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="/css/cliente.css?v=5">
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+  <main class="container py-5">
+
+    <!-- ========================================
+         PRESENTACIÓN
+    ========================================= -->
+
+    <section class="presentacion text-center">
+
+      <p class="etiqueta-superior">
+        Una pequeña colección
+      </p>
+
+      <h1 class="titulo-principal">
+        <%= titulo %>
+      </h1>
+
+      <p class="subtitulo mx-auto">
+        Hay canciones que dicen cosas que a veces las palabras
+        no pueden explicar.
+      </p>
+
+      <div class="contenedor-abreme">
+
+        <button
+          type="button"
+          class="button button-abreme"
+          id="btnAbrirCarta"
+        >
+          <span>Ábreme</span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         OBTENER CATEGORÍAS
+    ========================================= -->
+
+    <%
+      const categorias = [
+        ...new Set(
+          (canciones || [])
+            .map(cancion => cancion.categoria || "Sin categoría")
+            .filter(Boolean)
+        )
+      ];
+    %>
+
+
+    <!-- ========================================
+         FILTROS
+    ========================================= -->
+
+    <% if (canciones && canciones.length > 0) { %>
+
+      <section class="seccion-filtros">
+
+        <p class="filtros-label">
+          Explorar por categoría
+        </p>
+
+        <div
+          class="filtros-categorias"
+          id="filtrosCategorias"
+        >
+
+          <button
+            type="button"
+            class="filtro-categoria active"
+            data-categoria="todas"
+          >
+            Todas
+          </button>
+
+
+          <% categorias.forEach(categoria => { %>
+
+            <button
+              type="button"
+              class="filtro-categoria"
+              data-categoria="<%= categoria %>"
+            >
+              <%= categoria %>
+            </button>
+
+          <% }); %>
+
+        </div>
+
+      </section>
+
+    <% } %>
+
+
+    <!-- ========================================
+         CANCIONES
+    ========================================= -->
+
+    <section class="seccion-canciones">
+
+      <% if (canciones && canciones.length > 0) { %>
+
+        <div class="row justify-content-center g-4">
+
+          <% canciones.forEach((cancion, index) => { %>
+
+
+            <!--
+              CELULAR: 1 canción
+              TABLET:  2 canciones
+              PC:      3 canciones
+            -->
+
+            <div
+              class="col-12 col-md-6 col-lg-4 contenedor-cancion"
+              data-categoria="<%= cancion.categoria || 'Sin categoría' %>"
+            >
+
+
+              <article
+                class="card tarjeta-cancion h-100"
+
+                <% if (cancion.url_portada) { %>
+                  style="--fondo-cancion: url('<%= cancion.url_portada %>');"
+                <% } %>
+              >
+
+
+                <!-- FONDO -->
+
+                <% if (cancion.url_portada) { %>
+
+                  <div class="fondo-portada"></div>
+
+                <% } %>
+
+
+                <div class="capa-oscura"></div>
+
+
+                <!-- CONTENIDO -->
+
+                <div class="card-body p-4">
+
+
+                  <!-- INFORMACIÓN -->
+
+                  <div class="info-cancion">
+
+                    <h2 class="nombre-cancion mb-1">
+                      <%= cancion.titulo %>
+                    </h2>
+
+                    <p class="artista mb-3">
+                      <%= cancion.artista %>
+                    </p>
+
+
+                    <% if (cancion.dedicatoria) { %>
+
+                      <p class="dedicatoria mb-4">
+                        “<%= cancion.dedicatoria %>”
+                      </p>
+
+                    <% } %>
+
+                  </div>
+
+
+                  <!-- ========================================
+                       REPRODUCTOR YOUTUBE
+                  ========================================= -->
+
+                  <% if (
+                    cancion.plataforma === "youtube" &&
+                    cancion.url_embed
+                  ) { %>
+
+
+                    <div
+                      class="music-player"
+                      data-player-index="<%= index %>"
+                    >
+
+
+                      <!-- VINILO GRANDE -->
+
+                      <div class="vinyl-wrap">
+
+                        <div
+                          class="vinyl"
+
+                          <% if (cancion.url_portada) { %>
+                            style="--vinyl-cover: url('<%= cancion.url_portada %>');"
+                          <% } %>
+                        >
+
+                          <div class="vinyl-groove vinyl-groove-1"></div>
+
+                          <div class="vinyl-groove vinyl-groove-2"></div>
+
+                          <div class="vinyl-label"></div>
+
+                          <div class="vinyl-hole"></div>
+
+                        </div>
+
+                      </div>
+
+
+                      <!-- PANEL DEL REPRODUCTOR -->
+
+                      <div class="music-panel">
+
+
+                        <!-- INFORMACIÓN SUPERIOR -->
+
+                        <div class="music-top">
+
+                          <div
+                            class="mini-vinyl"
+
+                            <% if (cancion.url_portada) { %>
+                              style="--vinyl-cover: url('<%= cancion.url_portada %>');"
+                            <% } %>
+                          >
+
+                            <div class="vinyl-label"></div>
+
+                            <div class="vinyl-hole"></div>
+
+                          </div>
+
+
+                          <div class="music-meta">
+
+                            <strong>
+                              <%= cancion.titulo %>
+                            </strong>
+
+                            <span>
+                              <%= cancion.artista %>
+                            </span>
+
+                          </div>
+
+                        </div>
+
+
+                        <!-- BARRA DE PROGRESO -->
+
+                        <div class="music-progress-row">
+
+                          <span class="music-time current-time">
+                            0:00
+                          </span>
+
+
+                          <input
+                            type="range"
+                            class="music-progress"
+                            min="0"
+                            max="100"
+                            value="0"
+                            step="0.1"
+                            aria-label="Progreso de la canción"
+                          >
+
+
+                          <span class="music-time duration-time">
+                            0:00
+                          </span>
+
+                        </div>
+
+
+                        <!-- CONTROLES -->
+
+                        <div class="music-controls">
+
+
+                          <!-- ANTERIOR -->
+
+                          <button
+                            type="button"
+                            class="music-control music-prev"
+                            aria-label="Canción anterior"
+                            title="Anterior"
+                          >
+
+                            <svg
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+
+                              <polygon
+                                points="19 20 9 12 19 4 19 20"
+                              ></polygon>
+
+                              <line
+                                x1="5"
+                                y1="19"
+                                x2="5"
+                                y2="5"
+                              ></line>
+
+                            </svg>
+
+                          </button>
+
+
+                          <!-- PLAY / PAUSE -->
+
+                          <button
+                            type="button"
+                            class="music-control music-play"
+                            aria-label="Reproducir"
+                            title="Reproducir"
+                          >
+
+                            <svg
+                              class="icon-play"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+
+                              <polygon
+                                points="5 3 19 12 5 21 5 3"
+                              ></polygon>
+
+                            </svg>
+
+
+                            <svg
+                              class="icon-pause"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+
+                              <rect
+                                x="6"
+                                y="4"
+                                width="4"
+                                height="16"
+                              ></rect>
+
+                              <rect
+                                x="14"
+                                y="4"
+                                width="4"
+                                height="16"
+                              ></rect>
+
+                            </svg>
+
+                          </button>
+
+
+                          <!-- SIGUIENTE -->
+
+                          <button
+                            type="button"
+                            class="music-control music-next"
+                            aria-label="Canción siguiente"
+                            title="Siguiente"
+                          >
+
+                            <svg
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+
+                              <polygon
+                                points="5 4 15 12 5 20 5 4"
+                              ></polygon>
+
+                              <line
+                                x1="19"
+                                y1="5"
+                                x2="19"
+                                y2="19"
+                              ></line>
+
+                            </svg>
+
+                          </button>
+
+                        </div>
+
+                      </div>
+
+
+                      <!--
+                        YouTube real controlado por cliente.js
+                      -->
+
+                      <div
+                        class="youtube-host"
+                        aria-hidden="true"
+                      >
+
+                        <div
+                          class="youtube-player"
+                          id="player-<%= index %>"
+                          data-video-url="<%= cancion.url_embed %>"
+                        ></div>
+
+                      </div>
+
+                    </div>
+
+
+                  <% } else { %>
+
+
+                    <!-- ENLACE ALTERNATIVO -->
+
+                    <a
+                      href="<%= cancion.url_musica %>"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="button"
+                    >
+
+                      <span>
+                        Escuchar canción
+                      </span>
+
+                    </a>
+
+
+                  <% } %>
+
+                </div>
+
+              </article>
+
+            </div>
+
+          <% }); %>
+
+        </div>
+
+
+      <% } else { %>
+
+
+        <!-- SIN CANCIONES -->
+
+        <div class="text-center">
+
+          <p class="sin-canciones">
+            Pronto habrá algo especial aquí.
+          </p>
+
+        </div>
+
+
+      <% } %>
+
+    </section>
+
+  </main>
+
+
+  <!-- ========================================
+       VOLVER ARRIBA
+  ========================================= -->
+
+  <button
+    type="button"
+    class="button boton-volver-arriba"
+    id="btnVolverArriba"
+    aria-label="Volver arriba"
+  >
+    Volver arriba
+  </button>
+
+
+  <!-- ========================================
+       SCRIPTS
+  ========================================= -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+  ></script>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script src="/js/cliente.js?v=5"></script>
+
+</body>
+</html>
