@@ -6,6 +6,9 @@ const Administrador =
 const Cancion =
   require("../models/cancion.model");
 
+const { subirPortada } =
+  require("../services/portada-storage.service");
+
 
 // =============================================
 // MOSTRAR LOGIN
@@ -254,7 +257,7 @@ const crearNuevaCancion = async (req, res) => {
     if (req.file) {
 
       urlPortada =
-        `/uploads/portadas/${req.file.filename}`;
+        await subirPortada(req.file);
 
     }
 
@@ -502,7 +505,7 @@ const {
     if (req.file) {
 
       urlPortada =
-        `/uploads/portadas/${req.file.filename}`;
+        await subirPortada(req.file);
 
     }
 
