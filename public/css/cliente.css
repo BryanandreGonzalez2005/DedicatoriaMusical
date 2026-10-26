@@ -28,17 +28,13 @@ body {
   color: var(--texto);
 
   background:
-    radial-gradient(
-      circle at 50% -10%,
+    radial-gradient(circle at 50% -10%,
       rgba(215, 190, 185, .42),
-      transparent 34%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 34%),
+    linear-gradient(135deg,
       #f8f3ef 0%,
       var(--fondo) 48%,
-      #eee3dd 100%
-    );
+      #eee3dd 100%);
 
   background-attachment: fixed;
 
@@ -249,22 +245,22 @@ body {
   font-size: 1.55rem;
   font-weight: 700;
   letter-spacing: -.02em;
-  text-shadow: 0 2px 10px rgba(0,0,0,.62);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .62);
 }
 
 .artista {
-  color: rgba(255,255,255,.82);
+  color: rgba(255, 255, 255, .82);
   font-size: .94rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,.58);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .58);
 }
 
 .dedicatoria {
-  color: rgba(255,255,255,.96);
+  color: rgba(255, 255, 255, .96);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.12rem;
   font-style: italic;
   line-height: 1.55;
-  text-shadow: 0 2px 9px rgba(0,0,0,.68);
+  text-shadow: 0 2px 9px rgba(0, 0, 0, .68);
 }
 
 
@@ -339,8 +335,8 @@ body {
     repeating-radial-gradient(circle at center,
       #282221 0 3px,
       #3b3230 4px 5px);
-  border: 3px solid rgba(250,247,243,.75);
-  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+  border: 3px solid rgba(250, 247, 243, .75);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .25);
 }
 
 .vinyl {
@@ -365,7 +361,7 @@ body {
   inset: 34%;
   z-index: 2;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.42);
+  border: 1px solid rgba(255, 255, 255, .42);
 }
 
 .vinyl-hole {
@@ -386,7 +382,9 @@ body {
 }
 
 @keyframes vinylSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .music-top {
@@ -465,11 +463,9 @@ body {
   appearance: none;
   border-radius: 999px;
   background:
-    linear-gradient(
-      90deg,
+    linear-gradient(90deg,
       var(--acento) 0 var(--progress, 0%),
-      var(--acento-claro) var(--progress, 0%) 100%
-    );
+      var(--acento-claro) var(--progress, 0%) 100%);
   cursor: pointer;
 }
 
@@ -480,7 +476,7 @@ body {
   border: 2px solid var(--acento);
   border-radius: 50%;
   background: var(--superficie);
-  box-shadow: 0 2px 6px rgba(73,54,50,.2);
+  box-shadow: 0 2px 6px rgba(73, 54, 50, .2);
 }
 
 .music-progress::-moz-range-thumb {
@@ -552,7 +548,7 @@ body {
   height: 46px;
   color: #fff;
   background: var(--acento);
-  box-shadow: 0 7px 18px rgba(121,91,89,.24);
+  box-shadow: 0 7px 18px rgba(121, 91, 89, .24);
 }
 
 .music-play:hover {
@@ -591,7 +587,7 @@ body {
   margin: 0 auto;
   padding: 32px;
   color: var(--texto-suave);
-  background: rgba(250,247,243,.75);
+  background: rgba(250, 247, 243, .75);
   border: 1px solid var(--borde);
   border-radius: 24px;
   box-shadow: var(--sombra);
@@ -611,7 +607,7 @@ body {
   background: var(--superficie) !important;
   border: 1px solid var(--borde) !important;
   border-radius: 28px !important;
-  box-shadow: 0 30px 80px rgba(73,54,50,.22) !important;
+  box-shadow: 0 30px 80px rgba(73, 54, 50, .22) !important;
 }
 
 .swal-titulo-carta {
@@ -662,7 +658,7 @@ body {
   font-family: "DM Sans", sans-serif !important;
   font-weight: 650 !important;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(121,91,89,.20) !important;
+  box-shadow: 0 8px 22px rgba(121, 91, 89, .20) !important;
 }
 
 .swal-boton-cerrar:hover {
@@ -694,7 +690,7 @@ body {
 @media (max-width: 576px) {
   body {
     background:
-      radial-gradient(circle at 50% -5%, rgba(215,190,185,.45), transparent 32%),
+      radial-gradient(circle at 50% -5%, rgba(215, 190, 185, .45), transparent 32%),
       var(--fondo);
   }
 
@@ -807,6 +803,7 @@ body {
     animation: none;
   }
 }
+
 /* =========================================================
    FILTROS DE CATEGORÍAS
 ========================================================= */
@@ -935,8 +932,9 @@ body {
     padding: 8px 13px;
     font-size: .74rem;
   }
-  
+
 }
+
 /* BOTÓN PRESIÓNAME - pegar al final de public/css/cliente.css */
 
 .button-abreme {
@@ -1017,9 +1015,12 @@ body {
 }
 
 @keyframes idleAbreme {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: url(#handDrawnNoise);
   }
+
   50% {
     rotate: 2.5deg;
     filter: url(#handDrawnNoise2);
@@ -1027,24 +1028,404 @@ body {
 }
 
 @keyframes hoverAbreme {
-  0%, 100% {
+
+  0%,
+  100% {
     rotate: 0deg;
     translate: 0 0;
     filter: url(#handDrawnNoise);
   }
+
   25% {
     rotate: -1deg;
     translate: 0 -2px;
     filter: url(#handDrawnNoise2);
   }
+
   50% {
     rotate: 0deg;
     translate: 0 2px;
     filter: url(#handDrawnNoise);
   }
+
   75% {
     rotate: -1deg;
     translate: 0 -2px;
     filter: url(#handDrawnNoise2);
   }
+}
+
+/* =========================================================
+   BUSCADOR UIVERSE
+   Adaptado de Uiverse.io - Pankaj-Meharchandani
+========================================================= */
+
+.buscador-uiverse {
+  width: min(100%, 500px);
+  height: 70px;
+  margin: 0 auto 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  isolation: isolate;
+}
+
+
+/* CAPAS DEL EFECTO */
+
+.buscador-white,
+.buscador-border,
+.buscador-dark-border,
+.buscador-glow {
+  width: 100%;
+  height: 65px;
+
+  position: absolute;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  z-index: -1;
+}
+
+
+/* RESPLANDOR */
+
+.buscador-glow {
+  width: calc(100% + 25px);
+  height: 90px;
+
+  filter: blur(28px);
+  opacity: 0.35;
+}
+
+.buscador-glow::before {
+  content: "";
+
+  position: absolute;
+
+  width: 900px;
+  height: 900px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%) rotate(60deg);
+
+  background-image:
+    conic-gradient(#000,
+      #c98f65 5%,
+      #000 38%,
+      #000 50%,
+      #f28e8e 60%,
+      #000 87%);
+
+  transition: transform 2s;
+}
+
+
+/* BORDE OSCURO */
+
+.buscador-dark-border {
+  filter: blur(3px);
+}
+
+.buscador-dark-border::before {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%) rotate(82deg);
+
+  background-image:
+    conic-gradient(transparent,
+      #725d4a,
+      transparent 10%,
+      transparent 50%,
+      #d16e5a,
+      transparent 60%);
+
+  transition: transform 2s;
+}
+
+
+/* CAPA CLARA */
+
+.buscador-white {
+  width: calc(100% - 6px);
+  height: 62px;
+
+  filter: blur(2px);
+}
+
+.buscador-white::before {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%) rotate(83deg);
+
+  background-image:
+    conic-gradient(transparent 0%,
+      #dcb483,
+      transparent 8%,
+      transparent 50%,
+      #d16e5a,
+      transparent 58%);
+
+  transition: transform 2s;
+}
+
+
+/* BORDE PRINCIPAL */
+
+.buscador-border {
+  width: calc(100% - 10px);
+  height: 59px;
+
+  filter: blur(0.5px);
+}
+
+.buscador-border::before {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%) rotate(70deg);
+
+  background-image:
+    conic-gradient(#3a2e20,
+      #c98f65 5%,
+      #3a2e20 14%,
+      #3a2e20 50%,
+      #f28e8e 60%,
+      #3a2e20 64%);
+
+  transition: transform 2s;
+}
+
+
+/* ANIMACIÓN */
+
+.buscador-uiverse:hover .buscador-dark-border::before,
+.buscador-uiverse:focus-within .buscador-dark-border::before {
+  transform:
+    translate(-50%, -50%) rotate(262deg);
+
+  transition: transform 4s;
+}
+
+.buscador-uiverse:hover .buscador-glow::before,
+.buscador-uiverse:focus-within .buscador-glow::before {
+  transform:
+    translate(-50%, -50%) rotate(240deg);
+
+  transition: transform 4s;
+}
+
+.buscador-uiverse:hover .buscador-white::before,
+.buscador-uiverse:focus-within .buscador-white::before {
+  transform:
+    translate(-50%, -50%) rotate(263deg);
+
+  transition: transform 4s;
+}
+
+.buscador-uiverse:hover .buscador-border::before,
+.buscador-uiverse:focus-within .buscador-border::before {
+  transform:
+    translate(-50%, -50%) rotate(250deg);
+
+  transition: transform 4s;
+}
+
+
+/* INPUT */
+
+.buscador-main {
+  position: relative;
+
+  width: calc(100% - 14px);
+  height: 56px;
+
+  border-radius: 13px;
+
+  overflow: hidden;
+}
+
+.buscador-input-uiverse {
+  width: 100%;
+  height: 100%;
+
+  border: none;
+  border-radius: 13px;
+
+  background-color: #f2e2c4;
+  color: #3a2e20;
+
+  padding:
+    0 65px 0 55px;
+
+  font-family:
+    "DM Sans",
+    sans-serif;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+.buscador-input-uiverse::placeholder {
+  color: #857754;
+}
+
+
+/* Quitar X nativa */
+
+.buscador-input-uiverse::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+
+/* ICONO BUSCAR */
+
+.buscador-search-icon {
+  position: absolute;
+
+  left: 18px;
+  top: 50%;
+
+  transform:
+    translateY(-50%);
+
+  display: flex;
+
+  color: #a06f4d;
+
+  pointer-events: none;
+}
+
+
+/* BOTÓN DECORATIVO */
+
+.buscador-filter-icon {
+  position: absolute;
+
+  right: 8px;
+  top: 8px;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(180deg,
+      #a57d52,
+      #846846,
+      #6b5342);
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* BORDE ANIMADO DEL ICONO */
+
+.buscador-filter-border {
+  width: 44px;
+  height: 44px;
+
+  position: absolute;
+
+  right: 6px;
+  top: 6px;
+
+  border-radius: 11px;
+
+  overflow: hidden;
+}
+
+.buscador-filter-border::before {
+  content: "";
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%) rotate(90deg);
+
+  background-image:
+    conic-gradient(transparent,
+      #dcb483,
+      transparent 50%,
+      #d16e5a,
+      transparent);
+
+  animation:
+    buscadorRotate 4s linear infinite;
+}
+
+
+@keyframes buscadorRotate {
+
+  100% {
+    transform:
+      translate(-50%, -50%) rotate(450deg);
+  }
+
+}
+
+
+/* CELULAR */
+
+@media (max-width: 576px) {
+
+  .buscador-uiverse {
+    width: 92%;
+  }
+
+  .buscador-input-uiverse {
+    font-size: 14px;
+
+    padding-left: 50px;
+    padding-right: 60px;
+  }
+
 }

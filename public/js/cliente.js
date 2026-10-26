@@ -1033,8 +1033,10 @@ document.addEventListener(
     }
   }
 );
+
+
 /* =========================================================
-   FILTRO DE CATEGORÍAS
+   FILTRO DE CATEGORÍAS + BUSCADOR
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1045,88 +1047,171 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancionesCategoria =
     document.querySelectorAll(".contenedor-cancion");
 
+  const buscador =
+    document.getElementById("buscadorCanciones");
 
-  if (
-    botonesCategoria.length === 0 ||
-    cancionesCategoria.length === 0
-  ) {
+  if (cancionesCategoria.length === 0) {
     return;
   }
 
+  let categoriaActual = "todas";
+
+
+  /* NORMALIZAR TEXTO */
+
+  function normalizarTexto(texto) {
+
+    return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+
+  }
+
+
+  /* FILTRAR CANCIONES */
+
+  function filtrarCanciones() {
+
+    const busqueda =
+      normalizarTexto(
+        buscador?.value || ""
+      );
+
+
+    cancionesCategoria.forEach((contenedor) => {
+
+      const categoriaCancion =
+        contenedor.dataset.categoria;
+
+
+      const titulo =
+        contenedor.querySelector(
+          ".nombre-cancion"
+        )?.textContent || "";
+
+
+      const artista =
+        contenedor.querySelector(
+          ".artista"
+        )?.textContent || "";
+
+
+      /* COMPROBAR CATEGORÍA */
+
+      const coincideCategoria =
+        categoriaActual === "todas" ||
+        categoriaCancion === categoriaActual;
+
+
+      /* COMPROBAR BÚSQUEDA */
+
+      const textoCancion =
+        normalizarTexto(
+          titulo + " " + artista
+        );
+
+
+      const coincideBusqueda =
+        textoCancion.includes(busqueda);
+
+
+      const mostrar =
+        coincideCategoria &&
+        coincideBusqueda;
+
+
+      if (mostrar) {
+
+        contenedor.classList.remove("oculta");
+
+      } else {
+
+        contenedor.classList.add("oculta");
+
+
+        /*
+          Si la canción que ocultamos estaba sonando,
+          la pausamos.
+        */
+
+        const componente =
+          contenedor.querySelector(".music-player");
+
+        if (componente) {
+
+          const indice =
+            Number(
+              componente.dataset.playerIndex
+            );
+
+          const player =
+            reproductoresPorIndice.get(indice);
+
+          if (
+            player &&
+            typeof player.pauseVideo === "function"
+          ) {
+            player.pauseVideo();
+          }
+
+        }
+
+      }
+
+    });
+
+  }
+
+
+  /* =========================================================
+     CATEGORÍAS
+  ========================================================= */
 
   botonesCategoria.forEach((boton) => {
 
     boton.addEventListener("click", function () {
 
-      const categoriaSeleccionada =
+      categoriaActual =
         boton.dataset.categoria;
 
 
       /* Quitar selección anterior */
 
       botonesCategoria.forEach((otroBoton) => {
+
         otroBoton.classList.remove("active");
+
       });
 
 
-      /* Activar botón seleccionado */
+      /* Activar categoría seleccionada */
 
       boton.classList.add("active");
 
 
-      /* Mostrar u ocultar canciones */
+      /* Aplicar filtros */
 
-      cancionesCategoria.forEach((contenedor) => {
-
-        const categoriaCancion =
-          contenedor.dataset.categoria;
-
-
-        const mostrar =
-          categoriaSeleccionada === "todas" ||
-          categoriaCancion === categoriaSeleccionada;
-
-
-        if (mostrar) {
-
-          contenedor.classList.remove("oculta");
-
-        } else {
-
-          contenedor.classList.add("oculta");
-
-
-          /*
-            Si la canción que ocultamos estaba sonando,
-            la pausamos.
-          */
-
-          const componente =
-            contenedor.querySelector(".music-player");
-
-          if (componente) {
-
-            const indice =
-              Number(componente.dataset.playerIndex);
-
-            const player =
-              reproductoresPorIndice.get(indice);
-
-            if (
-              player &&
-              typeof player.pauseVideo === "function"
-            ) {
-              player.pauseVideo();
-            }
-          }
-
-        }
-
-      });
+      filtrarCanciones();
 
     });
 
   });
 
-});
 
+  /* =========================================================
+     BUSCADOR
+  ========================================================= */
+
+  if (buscador) {
+
+    buscador.addEventListener("input", function () {
+
+      filtrarCanciones();
+
+    });
+
+  }
+
+});
